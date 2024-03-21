@@ -1,0 +1,4 @@
+Para que una URL sea valida, se tienen que emplear estrictamente un subconjunto de caracteres ASCII (Alfanumericos, no reservados, reservados), 
+por lo tanto si se quiere usar un caracter de otro idioma como 上, o un emoji, debemos adaptarlo al conjunto ya mencionado, esto es lo que hace la "Codificacion".
+La misma usa un carácter '%' y un valor hexadecimal de dos caracteres correspondiente a su carácter en UTF-8 (formato de codificación).
+por ejemplo: 上海+中國 en UTF-8 se codificaría como %E4%B8%8A%E6%B5%B7%2B%E4%B8%AD%E5%9C%8B para usarse en URLs.
