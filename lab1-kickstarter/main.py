@@ -83,11 +83,16 @@ def lista_por_genero(genero):
         return jsonify(pelis_por_genero), 201
     return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
-def filtro_por_titulo():
-    return
+def filtro_por_titulo(palabra):
+    for pelicula in peliculas:
+        if palabra.lower() in pelicula['titulo'].lower(): #lo hacemos indiferente a minusculas y mayusculas 
+            lista_peli.append(pelicula)
+            return jsonify(lista_peli), 200
+    return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
 
-def pelicula_random():
-    return
+def pelicula_random(peliculas):
+    pelicula = random.choice(peliculas)
+    return jsonify(pelicula)
 
 def pelicula_random_genero(genero):
     # Esta funcion recomienta una pelicula random segun el genero dado
