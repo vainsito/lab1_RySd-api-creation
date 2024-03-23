@@ -39,7 +39,7 @@ def agregar_pelicula():
     }
     peliculas.append(nueva_pelicula)
     print(peliculas)
-    return jsonify(nueva_pelicula), 200
+    return jsonify(nueva_pelicula), 201
 
 
 def actualizar_pelicula(id):
@@ -78,7 +78,7 @@ def lista_por_genero(genero):
     pelis_por_genero = [] 
     for pelicula in peliculas:
         # Comparo el genero de la pelicula con el genero que me pasan en el request
-        if pelicula['genero'] == genero: 
+        if pelicula['genero'] == 'genero': 
             pelis_por_genero.append(pelicula)
         return jsonify(pelis_por_genero), 201
     return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
@@ -89,20 +89,22 @@ def filtro_por_titulo(palabra):
     for pelicula in peliculas:
         if palabra.lower() in pelicula['titulo'].lower(): #lo hacemos indiferente a minusculas y mayusculas 
             lista_peli.append(pelicula)
-            return jsonify(lista_peli), 200
+            return jsonify(lista_peli), 201
     return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
 
 def pelicula_random(peliculas):
     # Esta funcion recomienda una pelicula random
     pelicula = random.choice(peliculas)
-    return jsonify(pelicula)
+    return jsonify(pelicula), 200
 
 def pelicula_random_genero(genero):
     # Esta funcion recomienta una pelicula random segun el genero dado
     # Primero filtro las peliculas por genero
     pelis_por_genero = lista_por_genero(genero) 
     # Si hay peliculas con ese genero, devuelvo una random
+    print(pelis_por_genero)
     if len(pelis_por_genero) > 0:
+        print("Estoy en el if")
         return jsonify(pelicula_random(pelis_por_genero)), 200
     return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
@@ -111,6 +113,10 @@ app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, me
 app.add_url_rule('/peliculas', 'agregar_pelicula', agregar_pelicula, methods=['POST'])
 app.add_url_rule('/peliculas/<int:id>', 'actualizar_pelicula', actualizar_pelicula, methods=['PUT'])
 app.add_url_rule('/peliculas/<int:id>', 'eliminar_pelicula', eliminar_pelicula, methods=['DELETE'])
+# Agregar nuevas rutas para los endpoints faltantes
+app.add_url_rule('/peliculas/<string:genero>', 'lista_por_genero', lista_por_genero, methods=['GET'])
+app.add_url_rule('/peliculas/<string:palabra>', 'filtro_por_titulo', filtro_por_titulo, methods=['GET'])
+app.add_url_rule('/peliculas', 'pelicula_random', pelicula_random, methods=['GET'])
 
 if __name__ == '__main__':
     app.run()
