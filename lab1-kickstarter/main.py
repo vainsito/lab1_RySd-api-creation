@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import random
+from proximo_feriado import NextHoliday, get_url, requests
 
 app = Flask(__name__)
 peliculas = [
@@ -120,6 +121,22 @@ def pelicula_random_genero(genero):
     print("Su pelicula es: ", pelicula)
     return jsonify(pelicula), 201
 
+def peli_random_feriado(genero):
+    # Esta funcion recomienda una pelicula random segun el genero dado
+    # Primero filtro las peliculas por genero
+    feriado_obj = NextHoliday()
+    url = get_url(feriado_obj.year)
+    feriados = requests.get(url).json()
+    feriado_obj.set_next(feriados)
+    print ("Proximo feriado: ", feriado_obj.holiday)
+    # Ahora uso pelicula random genero
+    respuesta, _ = pelicula_random_genero(genero)
+    resultado = {
+        'pelicula': respuesta.get_json(),
+        'proximo_feriado': feriado_obj.holiday
+    }
+    return jsonify(resultado), 201
+
 app.add_url_rule('/peliculas', 'obtener_peliculas', obtener_peliculas, methods=['GET'])
 app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, methods=['GET'])
 app.add_url_rule('/peliculas', 'agregar_pelicula', agregar_pelicula, methods=['POST'])
@@ -129,7 +146,8 @@ app.add_url_rule('/peliculas/<int:id>', 'eliminar_pelicula', eliminar_pelicula, 
 app.add_url_rule('/peliculas/genero/<string:genero>', 'lista_por_genero', lista_por_genero, methods=['GET'])
 app.add_url_rule('/peliculas/titulo/<string:palabra>', 'filtro_por_titulo', filtro_por_titulo, methods=['GET'])
 app.add_url_rule('/peliculas/random', 'pelicula_random', pelicula_random, methods=['GET'])
-app.add_url_rule('/peliculas/random/<string:genero>', 'pelicula_random_genero', pelicula_random_genero, methods=['GET'])
+app.add_url_rule('/peliculas/feriado/<string:genero>', 'peli_random_feriado', peli_random_feriado, methods=['GET'])
+
 
 if __name__ == '__main__':
     app.run()
