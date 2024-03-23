@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, request
 import random
-from proximo_feriado import NextHoliday, get_url, requests
+from proximo_feriado import NextHoliday
 
 app = Flask(__name__)
 peliculas = [
@@ -125,8 +125,7 @@ def peli_random_feriado(genero):
     # Esta funcion recomienda una pelicula random segun el genero dado
     # Primero filtro las peliculas por genero
     feriado_obj = NextHoliday()
-    url = get_url(feriado_obj.year)
-    feriados = requests.get(url).json()
+    feriados = feriado_obj.obtener_feriados()
     feriado_obj.set_next(feriados)
     print ("Proximo feriado: ", feriado_obj.holiday)
     # Ahora uso pelicula random genero
