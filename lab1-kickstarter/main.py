@@ -1,4 +1,5 @@
 from flask import Flask, jsonify, request
+import random
 
 app = Flask(__name__)
 peliculas = [
@@ -71,7 +72,18 @@ def obtener_nuevo_id():
         return ultimo_id + 1
     else:
         return 1
+    
+def lista_por_genero():
+    return
 
+def filtro_por_titulo():
+    return
+
+def pelicula_random():
+    return
+
+def pelicula_random_genero():
+    return
 
 app.add_url_rule('/peliculas', 'obtener_peliculas', obtener_peliculas, methods=['GET'])
 app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, methods=['GET'])
