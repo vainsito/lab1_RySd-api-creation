@@ -55,3 +55,34 @@ if response.status_code == 200:
     print("Película eliminada correctamente.")
 else:
     print("Error al eliminar la película.")
+    
+# Filtrar películas por género
+genero = 'Drama'  # Género por el que filtrar
+response = requests.get(f'http://localhost:5000/peliculas/genero/{genero}')
+if response.status_code == 200:
+    peliculas_filtradas = response.json()
+    print(f"Películas de género '{genero}' son:")
+    for pelicula in peliculas_filtradas:
+        print(f"ID: {pelicula['id']}, Título: {pelicula['titulo']}, Género: {pelicula['genero']}")
+else:
+    print("Error al obtener las películas por género.")
+    
+# Filtrar peliculas por palabra clave
+palabra = 'El'
+response = requests.get(f'http://localhost:5000/peliculas/titulo/{palabra}')
+if response.status_code == 200:
+    peliculas_filtradas = response.json()
+    print(f"Películas con la palabra clave '{palabra}' son:")
+    for pelicula in peliculas_filtradas:
+        print(f"ID: {pelicula['id']}, Título: {pelicula['titulo']}, Género: {pelicula['genero']}")
+else:
+    print("Error al obtener las películas por palabra clave.")
+
+# Pelicula random
+response = requests.get('http://localhost:5000/peliculas/random')
+if response.status_code == 200:
+    pelicula_random = response.json()
+    print("Película aleatoria:")
+    print(f"ID: {pelicula_random['id']}, Título: {pelicula_random['titulo']}, Género: {pelicula_random['genero']}")
+else:
+    print("Error al obtener la película aleatoria.")
