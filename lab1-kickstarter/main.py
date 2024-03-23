@@ -73,22 +73,22 @@ def obtener_nuevo_id():
     else:
         return 1
     
-def lista_por_genero():
+def lista_por_genero(genero):
     return
 
 def filtro_por_titulo(palabra):
     for pelicula in peliculas:
         if palabra.lower() in pelicula['titulo'].lower(): #lo hacemos indiferente a minusculas y mayusculas 
             lista_peli.append(pelicula)
-    return lista_peli
+            return jsonify(lista_peli), 200
+    return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
 
-def pelicula_random():
+def pelicula_random(peliculas):
     pelicula = random.choice(peliculas)
-    return pelicula
+    return jsonify(pelicula)
 
-def pelicula_random_genero():
-    return
-
+def pelicula_random_genero(genero):
+    return 
 app.add_url_rule('/peliculas', 'obtener_peliculas', obtener_peliculas, methods=['GET'])
 app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, methods=['GET'])
 app.add_url_rule('/peliculas', 'agregar_pelicula', agregar_pelicula, methods=['POST'])
