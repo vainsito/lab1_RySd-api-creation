@@ -75,13 +75,16 @@ def obtener_nuevo_id():
     
 def lista_por_genero(genero):
     # Esta funcion filtra las peliculas por genero
+    ## Si la url contiene espacios damos error
+    genero_ok = genero.replace('-', ' ') # Reemplazo los guiones por espacios
+    print(" Cambia :" , genero_ok)
     pelis_por_genero = [] 
     for pelicula in peliculas:
         # Comparo el genero de la pelicula con el genero que me pasan en el request
-        if pelicula['genero'] == genero: 
+        if pelicula['genero'].strip().lower() == genero_ok.strip().lower(): 
             pelis_por_genero.append(pelicula)
     if len(pelis_por_genero) > 0:
-        return jsonify(pelis_por_genero), 200
+        return jsonify(pelis_por_genero), 201
     else:
         return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
@@ -115,7 +118,7 @@ def pelicula_random_genero(genero):
     # Si hay peliculas con ese genero, devuelvo una random
     pelicula = random.choice(pelis_ok)
     print("Su pelicula es: ", pelicula)
-    return jsonify(pelicula), 200
+    return jsonify(pelicula), 201
 
 app.add_url_rule('/peliculas', 'obtener_peliculas', obtener_peliculas, methods=['GET'])
 app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, methods=['GET'])
