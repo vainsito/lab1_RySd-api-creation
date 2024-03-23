@@ -80,8 +80,8 @@ def lista_por_genero(genero):
         # Comparo el genero de la pelicula con el genero que me pasan en el request
         if pelicula['genero'] == genero: 
             pelis_por_genero.append(pelicula)
-    if pelis_por_genero:
-        return jsonify(pelis_por_genero), 201
+    if len(pelis_por_genero) > 0:
+        return jsonify(pelis_por_genero), 200
     else:
         return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
@@ -107,11 +107,13 @@ def pelicula_random():
 def pelicula_random_genero(genero):
     # Esta funcion recomienda una pelicula random segun el genero dado
     # Primero filtro las peliculas por genero
-    respuesta = lista_por_genero(genero).get_json()
+    respuesta, _ = lista_por_genero(genero) # Desempaqueto la respuesta dada por la func
+    # La linea de abajo da error 
+    pelis_ok = respuesta.get_json()
     print("Peliculas filtradas correctamente")
-    print("Peliculas por genero: ", respuesta)
+    print("Peliculas por genero: ", pelis_ok)
     # Si hay peliculas con ese genero, devuelvo una random
-    pelicula = random.choice(respuesta)
+    pelicula = random.choice(pelis_ok)
     print("Su pelicula es: ", pelicula)
     return jsonify(pelicula), 200
 
