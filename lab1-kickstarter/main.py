@@ -78,10 +78,12 @@ def lista_por_genero(genero):
     pelis_por_genero = [] 
     for pelicula in peliculas:
         # Comparo el genero de la pelicula con el genero que me pasan en el request
-        if pelicula['genero'] == 'genero': 
+        if pelicula['genero'] == genero: 
             pelis_por_genero.append(pelicula)
+    if pelis_por_genero:
         return jsonify(pelis_por_genero), 201
-    return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
+    else:
+        return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
 def filtro_por_titulo(palabra):
     # Esta funcion filtra las peliculas por palabra en el titulo
@@ -89,24 +91,29 @@ def filtro_por_titulo(palabra):
     for pelicula in peliculas:
         if palabra.lower() in pelicula['titulo'].lower(): #lo hacemos indiferente a minusculas y mayusculas 
             lista_peli.append(pelicula)
-            return jsonify(lista_peli), 201
-    return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
+    if lista_peli:    
+        return jsonify(lista_peli), 201
+    else:
+        return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
 
-def pelicula_random(peliculas):
+def pelicula_random():
     # Esta funcion recomienda una pelicula random
-    pelicula = random.choice(peliculas)
+    todas_peliculas = obtener_peliculas()  # Asume que obtener_peliculas() devuelve la lista de peliculas
+    pelis_ok = todas_peliculas.get_json()
+    pelicula = random.choice(pelis_ok)
+    print("Su pelicula es: ", pelicula)
     return jsonify(pelicula), 200
 
 def pelicula_random_genero(genero):
-    # Esta funcion recomienta una pelicula random segun el genero dado
+    # Esta funcion recomienda una pelicula random segun el genero dado
     # Primero filtro las peliculas por genero
-    pelis_por_genero = lista_por_genero(genero) 
+    respuesta = lista_por_genero(genero).get_json()
+    print("Peliculas filtradas correctamente")
+    print("Peliculas por genero: ", respuesta)
     # Si hay peliculas con ese genero, devuelvo una random
-    print(pelis_por_genero)
-    if len(pelis_por_genero) > 0:
-        print("Estoy en el if")
-        return jsonify(pelicula_random(pelis_por_genero)), 200
-    return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
+    pelicula = random.choice(respuesta)
+    print("Su pelicula es: ", pelicula)
+    return jsonify(pelicula), 200
 
 app.add_url_rule('/peliculas', 'obtener_peliculas', obtener_peliculas, methods=['GET'])
 app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, methods=['GET'])
@@ -114,9 +121,10 @@ app.add_url_rule('/peliculas', 'agregar_pelicula', agregar_pelicula, methods=['P
 app.add_url_rule('/peliculas/<int:id>', 'actualizar_pelicula', actualizar_pelicula, methods=['PUT'])
 app.add_url_rule('/peliculas/<int:id>', 'eliminar_pelicula', eliminar_pelicula, methods=['DELETE'])
 # Agregar nuevas rutas para los endpoints faltantes
-app.add_url_rule('/peliculas/<string:genero>', 'lista_por_genero', lista_por_genero, methods=['GET'])
-app.add_url_rule('/peliculas/<string:palabra>', 'filtro_por_titulo', filtro_por_titulo, methods=['GET'])
-app.add_url_rule('/peliculas', 'pelicula_random', pelicula_random, methods=['GET'])
+app.add_url_rule('/peliculas/genero/<string:genero>', 'lista_por_genero', lista_por_genero, methods=['GET'])
+app.add_url_rule('/peliculas/titulo/<string:palabra>', 'filtro_por_titulo', filtro_por_titulo, methods=['GET'])
+app.add_url_rule('/peliculas/random', 'pelicula_random', pelicula_random, methods=['GET'])
+app.add_url_rule('/peliculas/random/<string:genero>', 'pelicula_random_genero', pelicula_random_genero, methods=['GET'])
 
 if __name__ == '__main__':
     app.run()
