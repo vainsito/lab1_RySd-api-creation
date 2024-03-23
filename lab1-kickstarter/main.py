@@ -76,11 +76,15 @@ def obtener_nuevo_id():
 def lista_por_genero():
     return
 
-def filtro_por_titulo():
-    return
+def filtro_por_titulo(palabra):
+    for pelicula in peliculas:
+        if palabra.lower() in pelicula['titulo'].lower(): #lo hacemos indiferente a minusculas y mayusculas 
+            lista_peli.append(pelicula)
+    return lista_peli
 
 def pelicula_random():
-    return
+    pelicula = random.choice(peliculas)
+    return pelicula
 
 def pelicula_random_genero():
     return
