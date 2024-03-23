@@ -78,7 +78,7 @@ def lista_por_genero(genero):
     pelis_por_genero = [] 
     for pelicula in peliculas:
         # Comparo el genero de la pelicula con el genero que me pasan en el request
-        if pelicula['genero'] == request.json['genero']: 
+        if pelicula['genero'] == genero: 
             pelis_por_genero.append(pelicula)
         return jsonify(pelis_por_genero), 201
     return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
