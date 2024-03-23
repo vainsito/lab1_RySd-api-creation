@@ -73,8 +73,15 @@ def obtener_nuevo_id():
     else:
         return 1
     
-def lista_por_genero():
-    return
+def lista_por_genero(genero):
+    # Esta funcion filtra las peliculas por genero
+    pelis_por_genero = [] 
+    for pelicula in peliculas:
+        # Comparo el genero de la pelicula con el genero que me pasan en el request
+        if pelicula['genero'] == request.json['genero']: 
+            pelis_por_genero.append(pelicula)
+        return jsonify(pelis_por_genero), 201
+    return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
 def filtro_por_titulo():
     return
@@ -82,8 +89,14 @@ def filtro_por_titulo():
 def pelicula_random():
     return
 
-def pelicula_random_genero():
-    return
+def pelicula_random_genero(genero):
+    # Esta funcion recomienta una pelicula random segun el genero dado
+    # Primero filtro las peliculas por genero
+    pelis_por_genero = lista_por_genero(genero) 
+    # Si hay peliculas con ese genero, devuelvo una random
+    if len(pelis_por_genero) > 0:
+        return jsonify(pelicula_random(pelis_por_genero)), 200
+    return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
 app.add_url_rule('/peliculas', 'obtener_peliculas', obtener_peliculas, methods=['GET'])
 app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, methods=['GET'])
