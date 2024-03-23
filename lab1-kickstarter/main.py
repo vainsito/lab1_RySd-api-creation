@@ -84,6 +84,8 @@ def lista_por_genero(genero):
     return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
 
 def filtro_por_titulo(palabra):
+    # Esta funcion filtra las peliculas por palabra en el titulo
+    lista_peli = [] 
     for pelicula in peliculas:
         if palabra.lower() in pelicula['titulo'].lower(): #lo hacemos indiferente a minusculas y mayusculas 
             lista_peli.append(pelicula)
@@ -91,6 +93,7 @@ def filtro_por_titulo(palabra):
     return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
 
 def pelicula_random(peliculas):
+    # Esta funcion recomienda una pelicula random
     pelicula = random.choice(peliculas)
     return jsonify(pelicula)
 
