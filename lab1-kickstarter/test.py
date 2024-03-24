@@ -98,3 +98,13 @@ if response.status_code == 201:
 else:
     print("Error al obtener una pelicula aleatoria del genero solicitado")
 print()
+
+#Pelicula random feriado
+genero = 'Drama'
+response = requests.get(f'http://localhost:5000/peliculas/feriado/{genero}')
+if response.status_code == 201:
+    pelicula_random = response.json()
+    print("Pelicula random para el proximo feriado del genero {genero}:", pelicula_random)
+else :
+    print("Error al obtener una pelicula random para el proximo feriado")
+print()

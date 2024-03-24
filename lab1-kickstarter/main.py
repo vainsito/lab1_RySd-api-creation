@@ -102,11 +102,10 @@ def filtro_por_titulo(palabra):
 
 def pelicula_random():
     # Esta funcion recomienda una pelicula random
-    todas_peliculas = obtener_peliculas()  # Asume que obtener_peliculas() devuelve la lista de peliculas
-    pelis_ok = todas_peliculas.get_json()
-    pelicula = random.choice(pelis_ok)
+    todas_peliculas = obtener_peliculas().get_json()  # Asume que obtener_peliculas() devuelve la lista de peliculas
+    pelicula = random.choice(todas_peliculas)
     print("Su pelicula es: ", pelicula)
-    return jsonify(pelicula), 200
+    return jsonify(pelicula), 201
 
 def pelicula_random_genero(genero):
     # Esta funcion recomienda una pelicula random segun el genero dado
@@ -144,6 +143,7 @@ app.add_url_rule('/peliculas/<int:id>', 'eliminar_pelicula', eliminar_pelicula, 
 # Agregar nuevas rutas para los endpoints faltantes
 app.add_url_rule('/peliculas/genero/<string:genero>', 'lista_por_genero', lista_por_genero, methods=['GET'])
 app.add_url_rule('/peliculas/titulo/<string:palabra>', 'filtro_por_titulo', filtro_por_titulo, methods=['GET'])
+app.add_url_rule('/peliculas/random/<string:genero>', 'pelicula_random_genero', pelicula_random_genero, methods =['GET'])
 app.add_url_rule('/peliculas/random', 'pelicula_random', pelicula_random, methods=['GET'])
 app.add_url_rule('/peliculas/feriado/<string:genero>', 'peli_random_feriado', peli_random_feriado, methods=['GET'])
 
