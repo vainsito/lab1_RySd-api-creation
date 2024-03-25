@@ -74,15 +74,19 @@ def obtener_nuevo_id():
     else:
         return 1
     
+# Funcion Auxiliar para acomodar las palabras
+def pretty_word(palabra):
+    # Esta funcion parsea las palabras, eliminando espacios, guiones y mayusculas
+    palabra_ok = palabra.replace('-', ' ') # Reemplazo los guiones por espacios
+    palabra_ok = palabra_ok.strip().lower() # Elimino espacios y paso a minusculas
+    return palabra_ok
+    
 def lista_por_genero(genero):
     # Esta funcion filtra las peliculas por genero
-    ## Si la url contiene espacios damos error
-    genero_ok = genero.replace('-', ' ') # Reemplazo los guiones por espacios
-    print(" Cambia :" , genero_ok)
     pelis_por_genero = [] 
     for pelicula in peliculas:
         # Comparo el genero de la pelicula con el genero que me pasan en el request
-        if pelicula['genero'].strip().lower() == genero_ok.strip().lower(): 
+        if pretty_word(pelicula['genero']) == pretty_word(genero): 
             pelis_por_genero.append(pelicula)
     if len(pelis_por_genero) > 0:
         return jsonify(pelis_por_genero), 201
@@ -91,11 +95,11 @@ def lista_por_genero(genero):
 
 def filtro_por_titulo(palabra):
     # Esta funcion filtra las peliculas por palabra en el titulo
-    lista_peli = [] 
+    lista_peli = []
     for pelicula in peliculas:
-        if palabra.lower() in pelicula['titulo'].lower(): #lo hacemos indiferente a minusculas y mayusculas 
-            lista_peli.append(pelicula)
-    if lista_peli:    
+        if pretty_word(palabra) in pretty_word(pelicula['titulo']): #lo hacemos indiferente a minusculas y mayusculas 
+            lista_peli.append(pelicula)   
+    if len(lista_peli) > 0:    
         return jsonify(lista_peli), 201
     else:
         return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
@@ -104,7 +108,7 @@ def pelicula_random():
     # Esta funcion recomienda una pelicula random
     todas_peliculas = obtener_peliculas().get_json()  # Asume que obtener_peliculas() devuelve la lista de peliculas
     if len(todas_peliculas) == 0:
-        return jsonsify({'mensaje': 'No hay peliculas disponibles'}), 404 
+        return jsonify({'mensaje': 'No hay peliculas disponibles'}), 404 
     pelicula = random.choice(todas_peliculas)
     print("Su pelicula es: ", pelicula)
     return jsonify(pelicula), 201
@@ -115,7 +119,7 @@ def pelicula_random_genero(genero):
     respuesta, _ = lista_por_genero(genero) # Desempaqueto la respuesta dada por la func
     pelis_ok = respuesta.get_json()
     if len(pelis_ok) == 0:
-        return jsonsify({'mensaje': 'No hay peliculas disponibles'}), 404 
+        return jsonify({'mensaje': 'No hay peliculas disponibles'}), 404 
     print("Peliculas filtradas correctamente")
     print("Peliculas por genero: ", pelis_ok)
     # Si hay peliculas con ese genero, devuelvo una random
