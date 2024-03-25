@@ -1,6 +1,8 @@
-from flask import Flask, jsonify, request
 import random
+from unidecode import unidecode
+from flask import Flask, jsonify, request
 from proximo_feriado import NextHoliday
+
 
 app = Flask(__name__)
 peliculas = [
@@ -79,11 +81,12 @@ def pretty_word(palabra):
     # Esta funcion parsea las palabras, eliminando espacios, guiones y mayusculas
     palabra_ok = palabra.replace('-', ' ') # Reemplazo los guiones por espacios
     palabra_ok = palabra_ok.strip().lower() # Elimino espacios y paso a minusculas
+    palabra_ok = unidecode(palabra_ok) # Elimino tildes
     return palabra_ok
     
 def lista_por_genero(genero):
     # Esta funcion filtra las peliculas por genero
-    pelis_por_genero = [] 
+    pelis_por_genero = []
     for pelicula in peliculas:
         # Comparo el genero de la pelicula con el genero que me pasan en el request
         if pretty_word(pelicula['genero']) == pretty_word(genero): 
