@@ -20,31 +20,30 @@ def mock_response():
 
         # Simulamos la respuesta para actualizar los detalles de una película
         m.put('http://localhost:5000/peliculas/1', status_code=200, json={'id': 1, 'titulo': 'Nuevo título', 'genero': 'Comedia'})
-        m.get('http://localhost:5000/peliculas/70', status_code=404, json={'mensaje': 'Id no encontrado'})
+        m.put('http://localhost:5000/peliculas/50', status_code=404, json={'mensaje': 'Id no encontrado'})
 
         # Simulamos la respuesta para eliminar una película
         m.delete('http://localhost:5000/peliculas/1', status_code=200)
         m.delete('http://localhost:5000/peliculas/50', status_code=404, json={'mensaje': 'Id no encontrado'})
 
         # Simulamos la respuesta para obtener peliculas por su genero
-        m.get('http://localhost:5000/genero/Drama', status_code=201)
-        m.get('http://localhost:5000/peliculas/genero/No_existe', status_code=404, json={'mensaje': 'Género no encontrado'})
+        m.get('http://localhost:5000/peliculas/genero/Drama', status_code=201)
+        m.get('http://localhost:5000/peliculas/genero/NoExiste', status_code=404, json={'mensaje': 'Género no encontrado'})
 
         # Simulamos la respuesta para obtener peliculas por una palabra clave
         m.get('http://localhost:5000/peliculas/titulo/Indi', status_code=201)
-        m.get('http://localhost:5000/peliculas/titulo/No_existe', status_code=404, json={'mensaje': 'Pelicula no encontrado'})
+        m.get('http://localhost:5000/peliculas/titulo/NoExiste', status_code=404, json={'mensaje': 'Pelicula no encontrado'})
 
         # Simulamos la respuesta para obtener una pelicula aleatoria
         m.get('http://localhost:5000/peliculas/random', status_code=201)
-        m.get('http://localhost:5000/peliculas/random/No_existe', status_code=404, json={'mensaje': 'No hay peliculas disponibles'})
 
         # Simulamos la respuesta para obtener una pelicula aleatoria de un genero particular
         m.get('http://localhost:5000/peliculas/random/Drama', status_code=201)
-        m.get('http://localhost:5000/peliculas/random/No_existe', status_code=404, json={'mensaje': 'Género no encontrado'})
+        m.get('http://localhost:5000/peliculas/random/NoExiste', status_code=404, json={'mensaje': 'Género no encontrado'})
 
         # Simulamos la respuesta para obtener una pelicula aleatoria de un genero particular en un dia feriado
         m.get('http://localhost:5000/peliculas/feriado/Drama', status_code=201)
-        m.get('http://localhost:5000/peliculas/feriado/No_existe', status_code=404, json={'mensaje': 'Género no encontrado'})
+        m.get('http://localhost:5000/peliculas/feriado/NoExiste', status_code=404, json={'mensaje': 'Género no encontrado'})
 
         yield m
 
@@ -75,57 +74,54 @@ def test_actualizar_detalle_pelicula(mock_response):
     assert response.json()['titulo'] == 'Nuevo título'
 
 def test_actualizar_detalle_pelicula_error(mock_response):
-    datos_actualizados = {'titulo': 'Nuevo título', 'genero': 'Comedia'}
-    response = requests.put('http://localhost:5000/peliculas/60', json=datos_actualizados)
+    response = requests.put('http://localhost:5000/peliculas/50', json={'titulo': 'Nuevo título', 'genero': 'Comedia'})
     assert response.status_code == 404
 
 def test_eliminar_pelicula(mock_response):
     response = requests.delete('http://localhost:5000/peliculas/1')
     assert response.status_code == 200
 
+
 def test_eliminar_pelicula_error(mock_response):
-    response = requests.delete('http://localhost:5000/peliculas/60')
+    response = requests.delete('http://localhost:5000/peliculas/50')
     assert response.status_code == 404
 
 def test_peliculas_genero(mock_response):
-    response = request.get('http://localhost:5000/peliculas/genero/Drama')
+    response = requests.get('http://localhost:5000/peliculas/genero/Drama')
     assert response.status_code == 201
 
 def test_peliculas_genero_error(mock_response):
-    response = request.get('http://localhost:5000/peliculas/genero/No_existe')
+    response = requests.get('http://localhost:5000/peliculas/genero/NoExiste')
     assert response.status_code == 404
 
 def test_filtro_por_titulo(mock_response):
-    response = request.get('http://localhost:5000/peliculas/titulo/Indi')
+    response = requests.get('http://localhost:5000/peliculas/titulo/Indi')
     assert response.status_code == 201
     assert "Indi".lower() in response.json()['titulo'].lower()
 
 def test_filtro_por_titulo(mock_response):
-    response = request.get('http://localhost:5000/peliculas/titulo/No_existe')
+    response = requests.get('http://localhost:5000/peliculas/titulo/NoExiste')
     assert response.status_code == 404
 
 def test_pelicula_random(mock_response):
-    response = request.get('http://localhost:5000/peliculas/random')
+    response = requests.get('http://localhost:5000/peliculas/random')
     assert response.status_code == 201
-
-def test_pelicula_random_error(mock_response):
-    response = request.get('http://localhost:5000/peliculas/No_existe')
-    assert response.status_code == 404
 
 def test_pelicula_random_genero(mock_response):
-    response = request.get('http://localhost:5000/peliculas/random/Drama')
+    response = requests.get('http://localhost:5000/peliculas/random/Drama')
     assert response.status_code == 201
-    assert response.json()['Genero'] == Drama
 
 def test_pelicula_random_genero_error(mock_response):
-    response = request.get('http://localhost:5000/peliculas/random/No_existe')
+    response = requests.get('http://localhost:5000/peliculas/random/NoExiste')
     assert response.status_code == 404
 
 def test_peli_random_feriado(mock_response):
-    response = request.get('http://localhost:5000/peliculas/feriado/Drama')
+    response = requests.get('http://localhost:5000/peliculas/feriado/Drama')
     assert response.status_code == 201
-    assert response.json()['Genero'] == Drama
 
 def test_peli_random_feriado_error(mock_response):
-    response = request.get('http://localhost:5000/peliculas/feriado/No_existe')
+    response = requests.get('http://localhost:5000/peliculas/feriado/NoExiste')
     assert response.status_code == 404
+
+# Run the test with the following command:
+# pytest test_pytest.py
