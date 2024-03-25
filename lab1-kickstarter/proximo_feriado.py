@@ -61,8 +61,9 @@ class NextHoliday:
         for feriaditis in feriados:
             if feriaditis['tipo'] == tipo:
                 feriados_filtered.append(feriaditis)
-                       
+                    
 next_holiday = NextHoliday()
 next_holiday.fetch_holidays()
 next_holiday.render()
 # next_holiday.feriados_por_tipo('inamovible')
+

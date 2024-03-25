@@ -103,6 +103,8 @@ def filtro_por_titulo(palabra):
 def pelicula_random():
     # Esta funcion recomienda una pelicula random
     todas_peliculas = obtener_peliculas().get_json()  # Asume que obtener_peliculas() devuelve la lista de peliculas
+    if len(todas_peliculas) == 0:
+        return jsonsify({'mensaje': 'No hay peliculas disponibles'}), 404 
     pelicula = random.choice(todas_peliculas)
     print("Su pelicula es: ", pelicula)
     return jsonify(pelicula), 201
@@ -111,8 +113,9 @@ def pelicula_random_genero(genero):
     # Esta funcion recomienda una pelicula random segun el genero dado
     # Primero filtro las peliculas por genero
     respuesta, _ = lista_por_genero(genero) # Desempaqueto la respuesta dada por la func
-    # La linea de abajo da error 
     pelis_ok = respuesta.get_json()
+    if len(pelis_ok) == 0:
+        return jsonsify({'mensaje': 'No hay peliculas disponibles'}), 404 
     print("Peliculas filtradas correctamente")
     print("Peliculas por genero: ", pelis_ok)
     # Si hay peliculas con ese genero, devuelvo una random
