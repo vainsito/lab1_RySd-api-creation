@@ -29,9 +29,8 @@ def obtener_pelicula(id):
     # Lógica para buscar la película por su ID y devolver sus detalles
     for pelicula in peliculas:
         if pelicula['id'] == id:
-            return jsonify(pelicula)
+            return jsonify(pelicula), 200
     return jsonify({'mensaje': 'Pelicula no encontrada'}), 404
-
 
 
 def agregar_pelicula():
@@ -65,7 +64,7 @@ def eliminar_pelicula(id):
     for x in range(len(peliculas)):
         if peliculas[x]['id'] == id:
             peliculas.pop(x)
-            return jsonify({'mensaje': 'Película eliminada correctamente'})
+            return jsonify({'mensaje': 'Película eliminada correctamente'}), 200
     return jsonify({'mensaje': 'Pelicula no encontrada'}), 404
 
 
@@ -76,6 +75,7 @@ def obtener_nuevo_id():
     else:
         return 1
     
+    
 # Funcion Auxiliar para acomodar las palabras
 def pretty_word(palabra):
     # Esta funcion parsea las palabras, eliminando espacios, guiones y mayusculas
@@ -83,6 +83,7 @@ def pretty_word(palabra):
     palabra_ok = palabra_ok.strip().lower() # Elimino espacios y paso a minusculas
     palabra_ok = unidecode(palabra_ok) # Elimino tildes
     return palabra_ok
+    
     
 def lista_por_genero(genero):
     # Esta funcion filtra las peliculas por genero
@@ -92,9 +93,10 @@ def lista_por_genero(genero):
         if pretty_word(pelicula['genero']) == pretty_word(genero): 
             pelis_por_genero.append(pelicula)
     if len(pelis_por_genero) > 0:
-        return jsonify(pelis_por_genero), 201
+        return jsonify(pelis_por_genero), 200
     else:
         return jsonify({'mensaje': 'No hay peliculas con ese genero'}), 404
+
 
 def filtro_por_titulo(palabra):
     # Esta funcion filtra las peliculas por palabra en el titulo
@@ -103,9 +105,10 @@ def filtro_por_titulo(palabra):
         if pretty_word(palabra) in pretty_word(pelicula['titulo']): #lo hacemos indiferente a minusculas y mayusculas 
             lista_peli.append(pelicula)   
     if len(lista_peli) > 0:    
-        return jsonify(lista_peli), 201
+        return jsonify(lista_peli), 200
     else:
         return jsonify({'mensaje': 'No existe pelicula con esa palabra incluida'}), 404
+
 
 def pelicula_random():
     # Esta funcion recomienda una pelicula random
@@ -114,7 +117,8 @@ def pelicula_random():
         return jsonify({'mensaje': 'No hay peliculas disponibles'}), 404 
     pelicula = random.choice(todas_peliculas)
     print("Su pelicula es: ", pelicula)
-    return jsonify(pelicula), 201
+    return jsonify(pelicula), 200
+
 
 def pelicula_random_genero(genero):
     # Esta funcion recomienda una pelicula random segun el genero dado
@@ -128,7 +132,8 @@ def pelicula_random_genero(genero):
     # Si hay peliculas con ese genero, devuelvo una random
     pelicula = random.choice(pelis_ok)
     print("Su pelicula es: ", pelicula)
-    return jsonify(pelicula), 201
+    return jsonify(pelicula), 200
+
 
 def peli_random_feriado(genero):
     # Esta funcion recomienda una pelicula random segun el genero dado
@@ -143,7 +148,8 @@ def peli_random_feriado(genero):
         'pelicula': respuesta.get_json(),
         'proximo_feriado': feriado_obj.holiday
     }
-    return jsonify(resultado), 201
+    return jsonify(resultado), 200
+
 
 app.add_url_rule('/peliculas', 'obtener_peliculas', obtener_peliculas, methods=['GET'])
 app.add_url_rule('/peliculas/<int:id>', 'obtener_pelicula', obtener_pelicula, methods=['GET'])
@@ -160,3 +166,4 @@ app.add_url_rule('/peliculas/feriado/<string:genero>', 'peli_random_feriado', pe
 
 if __name__ == '__main__':
     app.run()
+
