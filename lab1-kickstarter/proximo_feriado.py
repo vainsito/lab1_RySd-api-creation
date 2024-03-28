@@ -35,7 +35,7 @@ class NextHoliday:
         response = requests.get(get_url(self.year))
         data = response.json()
         self.set_next(data)
-
+     
     def render(self):
         if self.loading:
             print("Buscando...")
@@ -49,6 +49,21 @@ class NextHoliday:
             print("Tipo:")
             print(self.holiday['tipo'])
 
+    def obtener_feriados(self):
+        url = get_url(self.year)
+        feriados = requests.get(url).json()
+        return feriados
+    
+    def feriados_por_tipo(self, tipo):
+        feriados = self.obtener_feriados(self)
+        feriados_filtered = []
+        print("Llegue aca")
+        for feriaditis in feriados:
+            if feriaditis['tipo'] == tipo:
+                feriados_filtered.append(feriaditis)
+                    
 next_holiday = NextHoliday()
 next_holiday.fetch_holidays()
 next_holiday.render()
+# next_holiday.feriados_por_tipo('inamovible')
+
